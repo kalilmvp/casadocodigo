@@ -18,6 +18,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import br.com.casadocodigo.beans.Checkout;
 import br.com.casadocodigo.dao.CheckoutDAO;
+import br.com.casadocodigo.infra.MailSender;
 import br.com.casadocodigo.services.PaymentGetaway;
 
 @Path("/payment")
@@ -32,6 +33,9 @@ public class PaymentResource {
 	@Inject
 	private PaymentGetaway paymentGetaway;
 	
+	@Inject
+	private MailSender mailSender;
+	
 	@Resource(name = "java:comp/DefaultManagedExecutorService")
 	private ManagedExecutorService managedExecutorService;
 	
@@ -45,6 +49,14 @@ public class PaymentResource {
 			
 			try {
 				this.paymentGetaway.pay(total);
+				
+				String mailBody = "Nova compra, seu código de acompanhante é" + checkout.getUuid();
+				
+				this.mailSender.send(
+						"compras@casadocodigo.com.br", 
+						checkout.getBuyer().getEmail(), 
+						"Nova compra", 
+						mailBody);
 				
 				URI redirectURI = 
 						UriBuilder.fromUri(contextPath + "/site/index.xhtml")
