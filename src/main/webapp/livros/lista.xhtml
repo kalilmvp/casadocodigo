@@ -1,0 +1,43 @@
+<html xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    
+    <h:body>      
+    	<h:messages />
+      	<h:dataTable value="#{adminListBooksBean.books}" 
+        	var="book">
+        
+	        <h:column>
+	        	<f:facet name="header">
+	           	Título
+	         	</f:facet>
+	         	#{book.title}
+	       	</h:column>
+	       	<h:column>
+	        	<f:facet name="header">
+	           	Número de páginas
+	         	</f:facet>
+	         	#{book.numberOfPages}
+	       </h:column>
+	       <h:column>
+	       	<f:facet name="header">Autores</f:facet>
+	        	<ui:repeat var="author" 
+	           		value="#{book.authors}">
+	           		#{author.name}|  <br/>        
+	         	</ui:repeat>
+	       </h:column>
+	       <h:column>
+	       	<f:facet name="header">Data de Lançamento</f:facet>
+	       		<h:outputText value="#{book.releaseDate.time}">
+	       			<f:convertDateTime pattern="dd/MM/yyyy" />
+	       		</h:outputText>
+	       </h:column>
+	       <h:column>
+	       	<f:facet name="header">Sumário</f:facet>
+		   		<h:outputLink value="#{book.summary}" rendered="#{book.summary != null}">Ver Sumário</h:outputLink>
+	       </h:column>
+   		</h:dataTable>
+   </h:body>
+ </html>

@@ -1,0 +1,3 @@
+br/com/casadocodigo/beans/Book.class
+br/com/casadocodigo/model/AdminBooksBean.class
+br/com/casadocodigo/dao/BookDAO.class
