@@ -6,6 +6,9 @@ import java.net.URI;
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
+import javax.jms.Destination;
+import javax.jms.JMSContext;
+import javax.jms.JMSProducer;
 import javax.servlet.ServletContext;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -18,7 +21,6 @@ import javax.ws.rs.core.UriBuilder;
 
 import br.com.casadocodigo.beans.Checkout;
 import br.com.casadocodigo.dao.CheckoutDAO;
-import br.com.casadocodigo.infra.MailSender;
 import br.com.casadocodigo.services.PaymentGetaway;
 
 @Path("/payment")
@@ -34,7 +36,10 @@ public class PaymentResource {
 	private PaymentGetaway paymentGetaway;
 	
 	@Inject
-	private MailSender mailSender;
+	private JMSContext jmsContext;
+	
+	@Resource(lookup = "java:/jms/topics/checkoutTopics")
+	private Destination checkoutTopics;
 	
 	@Resource(name = "java:comp/DefaultManagedExecutorService")
 	private ManagedExecutorService managedExecutorService;
@@ -43,6 +48,7 @@ public class PaymentResource {
 	public void pay(@Suspended final AsyncResponse ar, @QueryParam("uuid") String uuid) {
 		String contextPath = this.context.getContextPath();
 		Checkout checkout = this.checkoutDAO.findByUuid(uuid);
+		JMSProducer producer = this.jmsContext.createProducer();
 		
 		this.managedExecutorService.submit(() -> {
 			BigDecimal total = checkout.getValue();
@@ -50,13 +56,7 @@ public class PaymentResource {
 			try {
 				this.paymentGetaway.pay(total);
 				
-				String mailBody = "Nova compra, seu código de acompanhante é" + checkout.getUuid();
-				
-				this.mailSender.send(
-						"compras@casadocodigo.com.br", 
-						checkout.getBuyer().getEmail(), 
-						"Nova compra", 
-						mailBody);
+				producer.send(checkoutTopics, checkout.getUuid());
 				
 				URI redirectURI = 
 						UriBuilder.fromUri(contextPath + "/site/index.xhtml")
