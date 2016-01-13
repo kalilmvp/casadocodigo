@@ -22,6 +22,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -53,6 +55,7 @@ public class Book {
 	@Size(min = 1)
 	@XmlElement(name = "author")
 	@XmlElementWrapper(name = "authors")
+	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 	private List<Author> authors = new ArrayList<Author>();
 	
 	@NotNull
