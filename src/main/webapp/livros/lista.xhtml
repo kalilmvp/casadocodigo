@@ -6,6 +6,15 @@
     
     <h:body>      
     	<h:messages />
+    	
+    	<div>
+    		<h:outputFormat value="#{msg.usuarios_bemVindo}">
+    			<f:param value="#{currentUser.get().email}" />
+    		</h:outputFormat>
+    	</div>
+    	
+    	<br/>
+    	
       	<h:dataTable value="#{adminListBooksBean.books}" 
         	var="book">
         
@@ -36,7 +45,7 @@
 	       </h:column>
 	       <h:column>
 	       	<f:facet name="header">Sumário</f:facet>
-		   		<h:outputLink value="#{book.summary}" rendered="#{book.summary != null}">Ver Sumário</h:outputLink>
+		   		<h:outputLink value="#{book.summaryPath}" rendered="#{book.summaryPath != null}">Ver Sumário</h:outputLink>
 	       </h:column>
    		</h:dataTable>
    </h:body>

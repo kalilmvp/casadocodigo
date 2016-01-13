@@ -7,7 +7,6 @@ import br.com.casadocodigo.beans.Checkout;
 
 public class CheckoutDAO {
 	
-
 	@PersistenceContext
 	private EntityManager manager;
 	
