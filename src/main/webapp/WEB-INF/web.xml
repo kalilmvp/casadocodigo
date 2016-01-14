@@ -30,6 +30,7 @@
 			<web-resource-name>administracao</web-resource-name>
 			<description>Urls que levam para paginas de administracao</description>
 			<url-pattern>/livros/*</url-pattern>
+			<url-pattern>/promocoes/*</url-pattern>
 			<http-method>GET</http-method>
 			<http-method>POST</http-method>
 		</web-resource-collection>
